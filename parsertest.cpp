@@ -6,12 +6,8 @@
 
 using namespace std;
 
-int main()
+void parse(string str)
 {
-    // the string that we're going to pass in to parse
-    // if you want to test a different string, replace str with desired string
-    string str = "command 1&& command 3; yes || command 4 | ; & another command @&& 3";
-    // string str = "ls -a && git status || cd ..; echo hello # comments";
     
     cout << "We will be parsing: \n\"" << str << "\"\n\n";
     
@@ -23,6 +19,18 @@ int main()
     vector<string> cmd;
     // string that stores the current connector, if the string has one
     string current;
+    
+    // tries to find the first instance of #
+    size_t pos = str.find("#");
+    if(pos != string::npos)
+    {
+        // if found, then keep everything before the # and throw away everything else
+        cout << "Found a \"#\" at index " << pos << ", removing everything after.\n";
+        str = str.substr(0, pos);
+        cout << "We will be parsing: \n\"" << str << "\"\n\n";
+    }
+    // reset pos just in case
+    pos = 0;
     
     // set up a bool that will return true when str has one of the specified connectors
     bool connector_found = true;
@@ -37,6 +45,7 @@ int main()
             positions.at(i) = str.find(connector.at(i));
         }
         // checks if all of the positions are -1
+        // if they are, then there are no connectors and the loop needs to stop
         if (all_of(positions.begin(), positions.end(), [](int i){return i==-1;}) )
         {
             cout << "Connector not found. Ending process.." << endl;
@@ -61,7 +70,6 @@ int main()
         current = connector.at(place);
         cout << "Found a connector: \"" << current << "\"\n";
         // find where the connector is
-        size_t pos = 0;
         pos = str.find(current);
         // displays length of connector and where it is in the string
         cout << "\"" << current << "\" is " << current.length() << " characters long, found at index " << pos << endl;
@@ -93,6 +101,48 @@ int main()
         cout << "\"" << con.at(i) << "\"    ";
     }
     cout << endl;
+    return;
+}
+
+int main()
+{
+    // the string that we're going to pass in to parse
+    // this will be changed into an actual string later
+    string str = "";
+    // string str = "ls -a && git status || cd ..; echo hello # comments";
+    bool start = true;
+    int choice = 0;
+    while(start)
+    {
+        cout << "Type 1 for manual input, 2 for preset string: ";
+        cin >> choice;
+        // manually input a string
+        if(choice == 1)
+        {
+            start = false;
+            cout << "Enter your string: ";
+            cin.ignore();
+            getline(cin, str);
+            parse(str);
+        }
+        // use the preset string (defined in this else if branch)
+        else if(choice == 2)
+        {
+            start = false;
+            str = "; this || is && a ; command # but now # this is where the comments && are";
+            // alternate test case
+            // str = "command 1&& command 3; yes || command 4 | ; & another command @&& 3";
+            cout << "Using preset string: \"" << str << "\"";
+            cout << endl;
+            parse(str);
+        }
+        else
+        {
+            cout << "Try again.\n";
+        }
+    }
+    
+    
     return 0;
 }
 
