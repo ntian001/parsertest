@@ -67,7 +67,12 @@ class VectorContainer : public Container
 		
 		
 		// DESTRUCTOR
-		~VectorContainer() {};
+		~VectorContainer() {
+			for(unsigned i = 0; i < cVector.size(); ++i)
+			{
+				delete cVector.at(i);
+			}
+		}
 };
 
 #endif //VECTOR_CONTAINER_H
